@@ -2,23 +2,47 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Page Title</title>
+    <title>Etch-a-sketch 2023</title>
+    <link rel="stylesheet" href="style.css" />
 
-    <style>
-
-    #main-grid {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    </style>
     
   </head>
-  <body style="background-color: rgb(131, 128, 128);">
+  <header class="header">
+    <h1 class="title">Etch-a-sketch Game</h1>
+  </header>
 
-    <div id="main-grid"></div>
-    <div id="buttons"></div>
+  <body style="background-color: rgb(237, 237, 237);">
+
+    <div class="main">
+
+      <div class = "sliderArea">
+        <div id="sizeValue" style="text-align: center;">16 x 16</div>
+        <input type="range" min="12" max="64" value="16" id="mySlider">
+      </div>
+
+      <div id="main-grid"></div>
+      
+        <div class="buttons">
+          <button id="clear" style="padding: 10px;">Clear</button>
+          <button id="eraser" style="padding: 10px;">Eraser</button>
+          <button id="rainbow" style="padding: 10px;">Rainbow</button>
+        </div>
+        <div class = "colorPickerArea">
+          <div id="colorPickerText" >Choose a color:</div>
+        <input id="colorPicker" type="color" value="#333333" />
+    </div>
+    </div>
+
+
+    <footer class="footer">
+      <p>
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        | by: Nemanja Badric
+      </p>
+    </footer>
+
     <script src="main.js"></script>
   </body>
 </html>

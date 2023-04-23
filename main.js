@@ -1,79 +1,115 @@
+const DEFAULT_SIZE = 16;
+const DEFAULT_COLOR = '#333333';
+const DEFAULT_MODE = 'color'
 
-let grid = document.getElementById('main-grid');
+let currentColor = DEFAULT_COLOR;
+let currentMode = DEFAULT_MODE;
+let currentSize = DEFAULT_SIZE;
+
+function setCurrentColor(newColor) {
+  currentColor = newColor;
+}
+
+function setCurrentMode(newMode) {
+  currentMode = newMode;
+  activateButton(newMode);
+}
+
+function setCurrentSize(newSize) {
+  currentSize = newSize;
+}
+
+const clear = document.getElementById('clear');
+const eraser = document.getElementById('eraser');
+const rainbow = document.getElementById('rainbow');
+const colorPicker = document.getElementById('colorPicker');
+const slider = document.getElementById("mySlider");
+const grid = document.getElementById('main-grid');
+
+//actions
+colorPicker.oninput = (e) => setCurrentColor(e.target.value)
+colorPicker.onclick = (e) => setCurrentMode('color')
+rainbow.onclick = () => setCurrentMode('rainbow')
+eraser.onclick = () => setCurrentMode('eraser')
+clear.onclick = () => reloadGrid()
+slider.onmousemove = (e) => updateSizeValue(e.target.value)
+slider.onchange = (e) => changeSize(e.target.value)
+
+let mouseDown = false
+document.body.onmousedown = () => (mouseDown = true)
+document.body.onmouseup = () => (mouseDown = false)
+
+function changeSize(value) {
+  setCurrentSize(value)
+  updateSizeValue(value)
+  reloadGrid()
+}
+
 let rows;
 let colls;
 let isDragging = false;
-grid.style.margin = '0px';
+let isEraserActive = false;
 
-for(let i = 0; i < 16; i++){
+    function createGrid(size){
 
-  rows = document.createElement('div');
-  
-  for(let j = 0; j < 16; j++){
+        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`
+        grid.style.gridTemplateRows = `repeat(${size}, 1fr)`
 
-    colls = document.createElement('div');
-    colls.classList.add('cell');
-    colls.style.height = '50px';
-    colls.style.width = '50px';
-    colls.style.margin = '0px';
-    colls.style.backgroundColor = 'white';
-    colls.classList.add('eachCell');
+          for(let i = 0; i < size * size; i++){
+            const gridElement = document.createElement('div')
+            gridElement.classList.add('grid-element')
+            gridElement.addEventListener('mouseover', changeColor)
+            gridElement.addEventListener('mousedown', changeColor)
+            grid.appendChild(gridElement)
+          }
+    }
 
-    colls.addEventListener('mousedown', handleMouseDown);
-    colls.addEventListener('mousemove', setColor);
+    function changeColor(e) {
+      if (e.type === 'mouseover' && !mouseDown) return
+      if (currentMode === 'rainbow') {
+        const randomR = Math.floor(Math.random() * 256)
+        const randomG = Math.floor(Math.random() * 256)
+        const randomB = Math.floor(Math.random() * 256)
+        e.target.style.backgroundColor = `rgb(${randomR}, ${randomG}, ${randomB})`
+      } else if (currentMode === 'eraser') {
+        e.target.style.backgroundColor = '#ffffff';
+      } else if(currentMode === 'color'){ //color mode
+        e.target.style.backgroundColor = currentColor
+      }
+    }
 
-    rows.append(colls);
+let sliderText = document.getElementById("sizeValue");
+let colorPickerText = document.getElementById("colorPickerText");
+
+
+function updateSizeValue(value) {
+  sliderText.textContent = `${slider.value} x ${slider.value}`;
+}
+
+function reloadGrid() {
+  clearGrid()
+  createGrid(currentSize)
+}
+
+function clearGrid() {
+  grid.innerHTML = ''
+}
+
+function activateButton(newMode) {
+  if (currentMode === 'rainbow') {
+    rainbow.classList.remove('active')
+  } else if (currentMode === 'eraser') {
+    eraser.classList.remove('active')
   }
 
-  rows.style.display = 'flex';
-  grid.append(rows);
-}
-
-let allCells = document.querySelectorAll('.eachCell');
-
-function setColor(event) {
-  if(isDragging) {
-    event.target.style.backgroundColor = 'red';
+  if (newMode === 'rainbow') {
+    rainbow.classList.add('active')
+  } else if (newMode === 'eraser') {
+    eraser.classList.add('active')
   }
 }
 
-function handleMouseDown(event) {
-  event.target.style.backgroundColor = 'red';
-  isDragging = true;
-  document.addEventListener('mouseup', handleMouseUp);
+window.onload = () => {
+  createGrid(DEFAULT_SIZE)
+  activateButton(DEFAULT_MODE)
 }
-
-function handleMouseUp(event) {
-  isDragging = false;
-  document.removeEventListener('mouseup', handleMouseUp);
-}
-
-//creating buttons
-let clear = document.createElement('button');
-let buttons = document.getElementById('buttons');
-clear.style.scale = 3;
-clear.textContent = 'Clear';
-clear.addEventListener('click', reset);
-
-function reset(){
-  
-    allCells.forEach((e) => {e.style.backgroundColor = 'white'});
-    
-}
-
-let eraser = document.createElement('button');
-eraser.style.scale = 3;
-eraser.textContent = 'Eraser';
-
-let rainbow = document.createElement('button');
-rainbow.style.scale = 3;
-rainbow.textContent = 'Rainbow';
-
-
-buttons.append(clear);
-buttons.append(eraser);
-buttons.append(rainbow);
-buttons.style.display = 'flex';
-buttons.style.justifyContent = 'center';
-buttons.style.height = '85vh';
-buttons.style.alignItems = 'flex-end';
