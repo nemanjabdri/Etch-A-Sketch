@@ -11,8 +11,8 @@ function setCurrentColor(newColor) {
 }
 
 function setCurrentMode(newMode) {
-  currentMode = newMode;
   activateButton(newMode);
+  currentMode = newMode;
 }
 
 function setCurrentSize(newSize) {
@@ -97,15 +97,15 @@ function clearGrid() {
 
 function activateButton(newMode) {
   if (currentMode === 'rainbow') {
-    rainbow.classList.remove('active')
+    rainbow.classList.remove('active');
   } else if (currentMode === 'eraser') {
-    eraser.classList.remove('active')
+    eraser.classList.remove('active');
   }
 
   if (newMode === 'rainbow') {
-    rainbow.classList.add('active')
+    rainbow.classList.add('active');
   } else if (newMode === 'eraser') {
-    eraser.classList.add('active')
+    eraser.classList.add('active');
   }
 }
 
